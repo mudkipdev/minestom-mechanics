@@ -41,7 +41,7 @@ public class Test {
 
         // Create the instance(world)
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-        InstanceContainer instanceContainer = instanceManager.createInstanceContainer(new AnvilLoader("./worlds/overworld"));
+        InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
 
         // Generate the world
         instanceContainer.setGenerator(unit -> unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK));
