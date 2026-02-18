@@ -1,9 +1,10 @@
 package dev.term4.mechanics.platform.client;
 
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.entity.Player;
-import net.minestom.server.event.player.PlayerDisconnectEvent;
+import net.minestom.server.event.EventFilter;
+import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerPluginMessageEvent;
+import net.minestom.server.event.trait.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 
@@ -16,29 +17,22 @@ public final class VersionDetector {
 
     public static final String VIA_PROXY_DETAILS_CHANNEL = "vv:proxy_details";
 
-    private static boolean registered = false; // default not registered
-
     private VersionDetector() {}
 
-    public static void register(ClientInfoService clientInfo) {
-        if (registered) return;
-        registered = true;
+    public static EventNode<PlayerEvent> node(ClientInfoService clientInfo) {
+        EventNode<PlayerEvent> node = EventNode.type("via-proxy-details", EventFilter.PLAYER);
 
-        var handler = MinecraftServer.getGlobalEventHandler();
+        node.addListener(PlayerPluginMessageEvent.class, e -> {
+            if (!VIA_PROXY_DETAILS_CHANNEL.equals(e.getIdentifier())) return;
 
-        handler.addListener(PlayerPluginMessageEvent.class, (event) -> {
-            if (!VIA_PROXY_DETAILS_CHANNEL.equals(event.getIdentifier())) return;
-
-            Player player = event.getPlayer();
-            byte[] data = event.getMessage();
+            byte[] data = e.getMessage();
             if (data.length == 0) return;
 
             // Via payload is UTF-8 JSON
             String json = new String(data, StandardCharsets.UTF_8);
-            clientInfo.setProxyDetails(player, json);
+            clientInfo.setProxyDetails(e.getPlayer(), json);
         });
 
-        handler.addListener(PlayerDisconnectEvent.class, (event) -> clientInfo.remove(event.getPlayer()));
+        return node;
     }
-
 }

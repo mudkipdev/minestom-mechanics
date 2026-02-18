@@ -9,10 +9,11 @@ import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.timer.TaskSchedule;
 
-public class Main {
+public class Test {
     static void main() {
 
         // Could wrap these in compatibility methods (compat.applySystemProperties(mode: 1.7, 1.8, etc)
@@ -40,7 +41,7 @@ public class Main {
 
         // Create the instance(world)
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
-        InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
+        InstanceContainer instanceContainer = instanceManager.createInstanceContainer(new AnvilLoader("./worlds/overworld"));
 
         // Generate the world
         instanceContainer.setGenerator(unit -> unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK));
