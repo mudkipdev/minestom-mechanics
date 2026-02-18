@@ -1,5 +1,6 @@
 package dev.term4;
 
+import dev.term4.mechanics.platform.MinestomMechanics;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -9,6 +10,7 @@ import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.timer.TaskSchedule;
 
 public class Main {
     static void main() {
@@ -31,14 +33,20 @@ public class Main {
                 new Auth.Bungee()
         );
 
+        // Enable ViaVersion proxy details
+        MinestomMechanics mm = MinestomMechanics.getInstance();
+        mm.viaProxyDetails = true;
+        mm.initialize();
+
         // Create the instance(world)
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
         InstanceContainer instanceContainer = instanceManager.createInstanceContainer();
 
         // Generate the world
-        instanceContainer.setGenerator(unit -> {
-            unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK);
-        });
+        instanceContainer.setGenerator(unit -> unit.modifier().fillHeight(0, 40, Block.GRASS_BLOCK));
+
+        var scheduler = MinecraftServer.getSchedulerManager();
+
 
         // Add an event handler to handle player spawning
         GlobalEventHandler globalEventHandler = MinecraftServer.getGlobalEventHandler();
@@ -46,6 +54,19 @@ public class Main {
             final Player player = event.getPlayer();
             event.setSpawningInstance(instanceContainer);
             player.setRespawnPoint(new Pos(0, 42, 0));
+
+            // Example of how to get a players protocol on login
+            final int maxRuns = 3;
+            final int[] runs = {0};
+
+            scheduler.submitTask(() -> {
+                if (!player.isOnline()) return TaskSchedule.stop();
+
+                int protocol = mm.clientInfo().getProtocol(player);
+                System.out.println(player.getUsername() + " protocol " + protocol);
+
+                return (++runs[0] >= maxRuns) ? TaskSchedule.stop() : TaskSchedule.tick(20);
+            });
         });
 
         server.start("0.0.0.0", 25566);
