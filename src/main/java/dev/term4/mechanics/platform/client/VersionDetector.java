@@ -4,7 +4,6 @@ import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerPluginMessageEvent;
 import net.minestom.server.event.trait.PlayerEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 
