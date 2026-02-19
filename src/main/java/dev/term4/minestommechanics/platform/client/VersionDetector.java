@@ -14,6 +14,8 @@ public final class VersionDetector {
 
     // For now only use protocol version sent from the proxy
 
+    // COULD switch this to use tags, but would probably get messy. Map is better.
+
     public static final String VIA_PROXY_DETAILS_CHANNEL = "vv:proxy_details";
 
     private VersionDetector() {}

@@ -70,7 +70,7 @@ public final class MinestomMechanics {
 
     /** Public method to install a node to the root MinestomMechanics node */
     public void install(EventNode<Event> node) {
-        if  (!initialized) throw new IllegalStateException("MinestomMechanics has been initialized");
+        if  (!initialized) throw new IllegalStateException("MinestomMechanics has not been initialized");
         root.addChild(node);
     }
 
