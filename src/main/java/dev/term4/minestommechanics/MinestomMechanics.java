@@ -3,6 +3,7 @@ package dev.term4.minestommechanics;
 import dev.term4.minestommechanics.platform.client.ClientInfoService;
 import dev.term4.minestommechanics.platform.client.VersionDetector;
 import dev.term4.minestommechanics.util.TickClock;
+import dev.term4.minestommechanics.util.VelocityEstimator;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -19,8 +20,8 @@ public final class MinestomMechanics {
 
     // might add an option for packet validation when not using a proxy? probably better to use a separate library for that though
 
-    private final EventNode<Event> root = EventNode.all("MinestomMechanics");
-    private final EventNode<Event> apiEvents = EventNode.all("api-events");
+    private final EventNode<Event> root = EventNode.all("mm:root");
+    private final EventNode<Event> apiEvents = EventNode.all("mm:api-events");
 
     // Server level services
     private ClientInfoService clientInfo;
@@ -37,7 +38,9 @@ public final class MinestomMechanics {
         if (initialized) return;
         initialized = true;
 
+        // Enable always-necessary functions
         TickClock.start();
+        VelocityEstimator.install(root);
 
         clientInfo = new ClientInfoService();
 
@@ -45,7 +48,7 @@ public final class MinestomMechanics {
         MinecraftServer.getGlobalEventHandler().addChild(root);
 
         // Create child nodes
-        EventNode<Event> detectors = EventNode.all("detectors");
+        EventNode<Event> detectors = EventNode.all("mm:detectors");
 
         // Add child nodes to root
         root.addChild(detectors);

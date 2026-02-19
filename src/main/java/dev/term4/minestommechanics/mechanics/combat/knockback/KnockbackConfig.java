@@ -15,6 +15,4 @@ public final class KnockbackConfig {
     public double horizontalFriction = 2.0;
     public double verticalFriction = 2.0;
 
-    public long sprintBufferTicks = 8; // TODO: update combat to use this
-
 }

@@ -1,20 +1,25 @@
 package dev.term4.minestommechanics.mechanics.combat.knockback;
 
-import dev.term4.minestommechanics.api.event.combat.AttackEvent;
+import dev.term4.minestommechanics.api.event.combat.KnockbackEvent;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
+import dev.term4.minestommechanics.util.VelocityEstimator;
 import net.minestom.server.ServerFlag;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.LivingEntity;
-import net.minestom.server.network.socket.Server;
+import net.minestom.server.entity.Player;
+import net.minestom.server.event.Event;
+import net.minestom.server.event.EventNode;
 
 public final class DefaultKnockbackSystem implements KnockbackSystem {
 
     // This is the default (vanilla) knockback system
 
     private final KnockbackConfig cfg;
+    private final EventNode<Event> apiEvents;
 
-    public DefaultKnockbackSystem(KnockbackConfig cfg) {
+    public DefaultKnockbackSystem(KnockbackConfig cfg, EventNode<Event> apiEvents) {
         this.cfg = cfg;
+        this.apiEvents = apiEvents;
     }
 
     @Override
@@ -45,9 +50,9 @@ public final class DefaultKnockbackSystem implements KnockbackSystem {
         }
 
         // Friction
-        Vec oldVel = victim.getVelocity();  // replace with velocity estimator (getVelocity doesn't work on players)
+        Vec oldVel = victim instanceof Player p ? VelocityEstimator.get(p) : victim.getVelocity();
 
-        // Rewrite simpler and more generally later, do null checks in config, etc
+        // Rewrite simpler and more generally later, do null checks in config, more general vars here (we will need tag overrides)
         double oldX = cfg.horizontalFriction != 0 ? oldVel.x() / cfg.horizontalFriction : 0;
         double oldZ = cfg.horizontalFriction != 0 ? oldVel.z() / cfg.horizontalFriction : 0;
         double oldY = cfg.verticalFriction != 0 ? oldVel.y() / cfg.verticalFriction : 0;
@@ -59,7 +64,13 @@ public final class DefaultKnockbackSystem implements KnockbackSystem {
         double newY = Math.min(preLimitY, cfg.verticalLimit) * ServerFlag.SERVER_TICKS_PER_SECOND;
 
         Vec result = new Vec(newX, newY, newZ);
-        victim.setVelocity(result);
+
+        // API
+        KnockbackEvent api = new KnockbackEvent(victim, snap, type, result);
+        apiEvents.call(api);
+        if (api.cancelled()) return;
+
+        victim.setVelocity(api.velocity());
 
         // Might experiment with forcing a velocity packet for legacy players? Could help combat feel
         //  Would be a compatibility setting

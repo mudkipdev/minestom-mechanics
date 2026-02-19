@@ -53,18 +53,18 @@ public final class Combat {
     }
 
     public static void install(MinestomMechanics mm, Config cfg, @Nullable DamageSystem damage) {
-         EventNode<Event> combat = EventNode.all("combat");
+         EventNode<Event> combat = EventNode.all("mm:combat");
 
          // Combat owned systems
          KnockbackSystem knockback = cfg.knockbackSystem != null
                  ? cfg.knockbackSystem
-                 : new DefaultKnockbackSystem(cfg.knockback);   // This is subject to change and can be simplified
+                 : new DefaultKnockbackSystem(cfg.knockback, mm.events());   // This is subject to change and can be simplified
          SprintTracker sprintTracker = new PacketSprintTracker(cfg.sprint.sprintBuffer);    // default for now
 
          AttackServices services = new AttackServices(damage, knockback, sprintTracker);
 
          if (cfg.enableAttack) {
-             AttackFeature.install(combat, cfg.attack, services);
+             AttackFeature.install(combat, cfg.attack, services, mm.events());
          }
 
          combat.addChild(sprintTracker.node());

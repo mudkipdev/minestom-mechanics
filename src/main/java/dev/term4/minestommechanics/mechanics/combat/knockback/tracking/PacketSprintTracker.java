@@ -12,7 +12,7 @@ public final class PacketSprintTracker implements SprintTracker {
 
     // Packet approach for tracking a players sprinting status
 
-    private static final Tag<Long> LAST_SPRINT_TICK = Tag.Transient("last_sprint_tick");
+    private static final Tag<Long> LAST_SPRINT_TICK = Tag.Transient("mm:last-sprint-tick");
 
     // "buffer" window for sprint hits (how long should a player be considered as sprinting after they stop actually sprinting)
     private final long sprintBuffer; // wire to config later
@@ -38,7 +38,7 @@ public final class PacketSprintTracker implements SprintTracker {
 
     /** Listener node that updates LAST_SPRINT_TICK. */ // Installed in the combat node
     public EventNode<PlayerEvent> node() {
-        EventNode<PlayerEvent> node = EventNode.type("sprint-tracker", EventFilter.PLAYER);
+        EventNode<PlayerEvent> node = EventNode.type("mm:sprint-tracker", EventFilter.PLAYER);
 
         node.addListener(PlayerStopSprintingEvent.class, e -> {
             markStopSprint(e.getPlayer());

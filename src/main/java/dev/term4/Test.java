@@ -42,8 +42,8 @@ public class Test {
         mm.viaProxyDetails = true;
         mm.initialize();
 
-        // Initialize combat system (TODO: remove damage system from here)
-        Combat.install(mm, new Combat.Config(), new DefaultDamageSystem());
+        // Initialize combat system (TODO: remove damage system from here, should be entirely separate)
+        Combat.install(mm, new Combat.Config(), new DefaultDamageSystem(mm.events()));
 
         // Create the instance(world)
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();
@@ -69,14 +69,14 @@ public class Test {
             final int maxRuns = 3;
             final int[] runs = {0};
 
-            scheduler.submitTask(() -> {
+            scheduler.scheduleTask(() -> {
                 if (!player.isOnline()) return TaskSchedule.stop();
 
                 int protocol = mm.clientInfo().getProtocol(player);
                 System.out.println(player.getUsername() + " protocol " + protocol);
 
                 return (++runs[0] >= maxRuns) ? TaskSchedule.stop() : TaskSchedule.tick(20);
-            });
+            }, TaskSchedule.tick(20));
         });
 
         server.start("0.0.0.0", 25566);

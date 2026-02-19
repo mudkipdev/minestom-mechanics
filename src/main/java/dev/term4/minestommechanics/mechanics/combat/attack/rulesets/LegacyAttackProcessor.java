@@ -8,6 +8,7 @@ import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.damage.DamageRequest;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import net.minestom.server.entity.LivingEntity;
+import net.minestom.server.entity.Player;
 
 
 import static dev.term4.minestommechanics.mechanics.damage.DamageTypes.PLAYER_ATTACK;

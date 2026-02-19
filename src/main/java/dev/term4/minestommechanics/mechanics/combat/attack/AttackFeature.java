@@ -20,7 +20,7 @@ public final class AttackFeature {
      * @param combatNode
      * @param cfg
      */
-    public static void install(EventNode<Event> combatNode, Config.Attack cfg, AttackServices services) {
+    public static void install(EventNode<Event> combatNode, Config.Attack cfg, AttackServices services, EventNode<Event> apiEvents) {
 
         // register the listener(s) here and forward t cfg.processor.processAttack()
         //  cfg.reach will be important later for validation + swing/raycast attacks
@@ -47,9 +47,9 @@ public final class AttackFeature {
                     target.getPosition()
             );
 
+            // API
             AttackEvent api = new AttackEvent(snap);
-
-            MinecraftServer.getGlobalEventHandler().call(api);
+            apiEvents.call(api);
             if (api.cancelled()) return;
 
             // Build snapshot with any API changes

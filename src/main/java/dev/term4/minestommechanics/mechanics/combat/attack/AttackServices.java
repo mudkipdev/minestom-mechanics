@@ -3,7 +3,7 @@ package dev.term4.minestommechanics.mechanics.combat.attack;
 import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.combat.knockback.tracking.SprintTracker;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Systems available to attack rulesets for processing attacks

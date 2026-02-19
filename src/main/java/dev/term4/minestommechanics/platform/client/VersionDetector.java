@@ -21,7 +21,7 @@ public final class VersionDetector {
     private VersionDetector() {}
 
     public static EventNode<PlayerEvent> node(ClientInfoService clientInfo) {
-        EventNode<PlayerEvent> node = EventNode.type("via-proxy-details", EventFilter.PLAYER);
+        EventNode<PlayerEvent> node = EventNode.type("mm:via-proxy-details", EventFilter.PLAYER);
 
         node.addListener(PlayerPluginMessageEvent.class, e -> {
             if (!VIA_PROXY_DETAILS_CHANNEL.equals(e.getIdentifier())) return;
