@@ -1,6 +1,8 @@
 package dev.term4;
 
-import dev.term4.minestommechanics.platform.MinestomMechanics;
+import dev.term4.minestommechanics.MinestomMechanics;
+import dev.term4.minestommechanics.mechanics.combat.Combat;
+import dev.term4.minestommechanics.mechanics.damage.DefaultDamageSystem;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -39,6 +41,9 @@ public class Test {
         MinestomMechanics mm = MinestomMechanics.getInstance();
         mm.viaProxyDetails = true;
         mm.initialize();
+
+        // Initialize combat system (TODO: remove damage system from here)
+        Combat.install(mm, new Combat.Config(), new DefaultDamageSystem());
 
         // Create the instance(world)
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();

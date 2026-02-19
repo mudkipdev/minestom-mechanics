@@ -1,7 +1,8 @@
-package dev.term4.minestommechanics.platform;
+package dev.term4.minestommechanics;
 
 import dev.term4.minestommechanics.platform.client.ClientInfoService;
 import dev.term4.minestommechanics.platform.client.VersionDetector;
+import dev.term4.minestommechanics.util.TickClock;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -35,6 +36,8 @@ public final class MinestomMechanics {
     public void initialize() {
         if (initialized) return;
         initialized = true;
+
+        TickClock.start();
 
         clientInfo = new ClientInfoService();
 
