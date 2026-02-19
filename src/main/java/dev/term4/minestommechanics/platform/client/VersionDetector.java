@@ -1,4 +1,4 @@
-package dev.term4.mechanics.platform.client;
+package dev.term4.minestommechanics.platform.client;
 
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;

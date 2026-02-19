@@ -1,7 +1,9 @@
-package dev.term4.mechanics.platform.client;
+package dev.term4.minestommechanics.platform.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minestom.server.entity.Player;
 
 import java.util.UUID;
@@ -11,9 +13,6 @@ public final class ClientInfoService {
 
     // This class stores ONLY client information relevant to this library. For now only the protocol version.
     // In the future this may include things like mods, Animatium, Combatify, Lunar client Apollo, and Badlion's API
-
-    // Mapper used for the ViaVersion proxy details JSON
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static final int UNKNOWN_PROTOCOL = -1;
 
@@ -70,9 +69,9 @@ public final class ClientInfoService {
 
     private static int parseProtocol(String json) {
         try {
-            JsonNode node = MAPPER.readTree(json);
-            JsonNode version = node.get("version");
-            return (version != null && version.isNumber()) ? version.asInt() : UNKNOWN_PROTOCOL;
+            JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+            var version = obj.get("version");
+            return (version != null && version.isJsonPrimitive()) ? version.getAsInt() : UNKNOWN_PROTOCOL;
         } catch (Exception ignored) {
             return UNKNOWN_PROTOCOL;
         }
