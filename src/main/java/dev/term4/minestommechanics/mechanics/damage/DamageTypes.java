@@ -5,8 +5,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.registry.RegistryKey;
 
-import javax.xml.stream.events.Namespace;
-
 public final class DamageTypes {
 
     // This class is only used to cache Minestom damage registry lookups

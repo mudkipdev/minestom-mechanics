@@ -1,6 +1,5 @@
 package dev.term4.minestommechanics.mechanics.combat.attack.rulesets;
 
-import dev.term4.minestommechanics.api.event.combat.AttackEvent;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
@@ -8,7 +7,6 @@ import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.damage.DamageRequest;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import net.minestom.server.entity.LivingEntity;
-import net.minestom.server.entity.Player;
 
 
 import static dev.term4.minestommechanics.mechanics.damage.DamageTypes.PLAYER_ATTACK;
@@ -24,7 +22,7 @@ public final class LegacyAttackProcessor implements AttackProcessor {
     @Override
     public void processAttack(AttackSnapshot snap, AttackServices services) {
 
-        if (!(snap.targetHint() instanceof LivingEntity living)) return;
+        if (!(snap.target() instanceof LivingEntity living)) return;
 
         // damage
         DamageSystem damage = services.damage();

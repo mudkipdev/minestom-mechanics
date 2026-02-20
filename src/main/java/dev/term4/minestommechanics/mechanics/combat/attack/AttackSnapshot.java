@@ -1,39 +1,49 @@
 package dev.term4.minestommechanics.mechanics.combat.attack;
 
 import dev.term4.minestommechanics.api.event.combat.AttackEvent;
+import dev.term4.minestommechanics.api.event.combat.AttackEvent.Cause;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.Player;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public record AttackSnapshot (
+/**
+ *
+ * @param attacker the entity initiating the attack
+ * @param target the target entity of the attack
+ * @param cause the cause of the attack (what kind of attack was this?)
+ * @param item the item used to attack (returns air for fist)
+ * @param sprint was the attacker sprinting when it attacked?
+ * @param attackerPos position of the attacker at the time of the attack
+ * @param targetPos position of the target at the time of the attack
+ */
+public record AttackSnapshot (Entity attacker, @Nullable Entity target, AttackEvent.Cause cause,
+                              ItemStack item, boolean sprint, @Nullable Point attackerPos, @Nullable Point targetPos) {
 
-    // This is essentially a snapshot of all relevant attack information at the time of the attack
+    public Builder toBuilder() { return new Builder(attacker, target, cause, item, sprint, attackerPos, targetPos); }
 
-    Player attacker,
-    @Nullable Entity targetHint,
-    AttackEvent.Cause cause,
+    public static final class Builder {
+        private Entity attacker;
+        private @Nullable Entity target;
+        private Cause cause;
+        private ItemStack item;
+        private boolean sprint;
+        private @Nullable Point attackerPos;
+        private @Nullable Point targetPos;
 
-    // Immutable data for knockback/damage (attack context)
-    ItemStack heldItemSnapshot,
-    boolean sprintHit,
+        Builder(Entity a, @Nullable Entity t, Cause c, ItemStack i, boolean s, @Nullable Point ap, @Nullable Point tp) {
+            attacker = a; target = t; cause = c; item = i; sprint = s; attackerPos = ap; targetPos = tp;
+        }
 
-    // Spatial locations of entities involved
-    @Nullable Point attackerPos,
-    @Nullable Point targetPos
+        public Builder attacker(Entity e) { attacker = e; attackerPos = e != null ? e.getPosition() : null; return this; }
+        public Builder target(Entity e) { target = e; targetPos = e != null ? e.getPosition() : null; return this; }
+        public Builder item(ItemStack i) { item = i; return this; }
+        public Builder sprint(boolean s) { sprint = s; return this; }
+        public Builder attackerPos(Point p) { attackerPos = p; return this; }
+        public Builder targetPos(Point p) { targetPos = p; return this; }
 
-) {
-    public static AttackSnapshot fromPacket(Player attacker, Entity target, boolean sprintHit) {
-        return new AttackSnapshot(
-                attacker,
-                target,
-                AttackEvent.Cause.ATTACK_PACKET,
-                attacker.getItemInMainHand(),   // update to use the actual item attack was done with
-                sprintHit,
-                attacker.getPosition(),
-                target.getPosition()
-        );
+        public AttackSnapshot build() {
+            return new AttackSnapshot(attacker, target, cause, item, sprint, attackerPos, targetPos);
+        }
     }
-
 }

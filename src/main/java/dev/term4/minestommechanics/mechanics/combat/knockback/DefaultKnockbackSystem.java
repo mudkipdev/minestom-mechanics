@@ -44,7 +44,7 @@ public final class DefaultKnockbackSystem implements KnockbackSystem {
         double v = cfg.vertical;
 
         // Sprint bonus
-        if (snap.sprintHit()) {
+        if (snap.sprint()) {
             h += cfg.extraHorizontal;
             v += cfg.extraVertical;
         }

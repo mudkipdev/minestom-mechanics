@@ -2,11 +2,9 @@ package dev.term4.minestommechanics.mechanics.combat.attack;
 
 import dev.term4.minestommechanics.api.event.combat.AttackEvent;
 import dev.term4.minestommechanics.mechanics.combat.Combat.Config;
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.entity.Player;
+import dev.term4.minestommechanics.mechanics.combat.attack.hitdetection.PacketHit;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
-import net.minestom.server.event.entity.EntityAttackEvent;
 
 public final class AttackFeature {
 
@@ -27,38 +25,24 @@ public final class AttackFeature {
 
         if (!cfg.enabled) return;
 
-        final AttackProcessor processor = cfg.processor.create(services);
+        final AttackProcessor processor = cfg.ruleset.create(services);
 
         // Attack packets
-        combatNode.addListener(EntityAttackEvent.class, e -> {
+        if (cfg.packetHits) {
+            PacketHit.install(combatNode, services, snap -> {
+                AttackEvent api = new AttackEvent(snap);
+                apiEvents.call(api);
+                if (api.cancelled() || !api.process()) return;
 
-            if (!(e.getEntity() instanceof  Player attacker)) return;
+                AttackProcessor proc = api.ruleset() != null ? api.ruleset().create(services) : cfg.ruleset.create(services);
+                proc.processAttack(api.finalSnap(), services);
+            });
+        }
 
-            var target = e.getTarget(); // don't filter only LivingEntity. Crystals, armor stands, projectiles, are all nonliving and may have behavior
+        // Swing raycasts
 
-            // Fire API event
-            AttackSnapshot snap = new AttackSnapshot(
-                    attacker,
-                    target,
-                    AttackEvent.Cause.ATTACK_PACKET,
-                    attacker.getItemInMainHand(),   // later resolve the hand used
-                    services.sprintTracker().isSprintHit(attacker),
-                    attacker.getPosition(),
-                    target.getPosition()
-            );
 
-            // API
-            AttackEvent api = new AttackEvent(snap);
-            apiEvents.call(api);
-            if (api.cancelled()) return;
-
-            // Build snapshot with any API changes
-            AttackSnapshot finalSnap = api.toSnapshot();
-
-            // Forward to configured processor
-            processor.processAttack(finalSnap, services);
-        });
-
+        // Some other custom hit detection?
     }
 
 }

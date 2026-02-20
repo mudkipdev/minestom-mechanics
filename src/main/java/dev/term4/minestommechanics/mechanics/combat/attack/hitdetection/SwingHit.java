@@ -1,4 +1,4 @@
-package dev.term4.minestommechanics.mechanics.combat.hitdetection;
+package dev.term4.minestommechanics.mechanics.combat.attack.hitdetection;
 
 public class SwingHit {
 

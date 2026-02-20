@@ -6,7 +6,6 @@ import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.knockback.DefaultKnockbackSystem;
 import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackConfig;
 import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
-import dev.term4.minestommechanics.mechanics.combat.knockback.tracking.PacketSprintTracker;
 import dev.term4.minestommechanics.mechanics.combat.knockback.tracking.SprintTracker;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import dev.term4.minestommechanics.MinestomMechanics;
@@ -37,12 +36,12 @@ public final class Combat {
 
         public static final class Attack {
             public boolean enabled = true;
-
+            public boolean packetHits = true;
             /**
              * Advanced attack processing. Most modification can be done through tags or via AttackEvent.
              * Most users should leave this alone.
              */
-            public AttackProcessor.Ruleset processor = AttackProcessor.legacy();
+            public AttackProcessor.Ruleset ruleset = AttackProcessor.legacy();
 
             public double reach = 3.0;
         }
@@ -59,7 +58,7 @@ public final class Combat {
          KnockbackSystem knockback = cfg.knockbackSystem != null
                  ? cfg.knockbackSystem
                  : new DefaultKnockbackSystem(cfg.knockback, mm.events());   // This is subject to change and can be simplified
-         SprintTracker sprintTracker = new PacketSprintTracker(cfg.sprint.sprintBuffer);    // default for now
+         SprintTracker sprintTracker = new SprintTracker(cfg.sprint.sprintBuffer);    // default for now
 
          AttackServices services = new AttackServices(damage, knockback, sprintTracker);
 

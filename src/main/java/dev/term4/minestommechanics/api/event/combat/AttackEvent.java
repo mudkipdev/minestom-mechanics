@@ -1,24 +1,26 @@
 package dev.term4.minestommechanics.api.event.combat;
 
+import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
 import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+
+/** Fired when a hit is detected. */ // Future plans to allow mobs / other entities to fire this event, or for users to manually fire it.
 public final class AttackEvent implements Event {
 
     // This is the public facing API users can hook into to get information or change how an attack event happens
 
     // Was this attack "real" or emulated? Was this a projectile?
-    public enum Cause { ATTACK_PACKET, EMULATED_ATTACK, PROJECTILE }
+    public enum Cause { ATTACK_PACKET, SWING_RAYCAST, PROJECTILE } // Probably add something here for mob / non player attacks
 
     private final AttackSnapshot snapshot;
+    private AttackSnapshot finalSnap;
 
-    private @Nullable Entity targetOverride;
-    private @Nullable Boolean sprintHitOverride;
-    private @Nullable ItemStack weaponOverride;
+    private boolean process = true; // process this attack, true by default (probs update from a boolean for which processor to use)
+    private @Nullable AttackProcessor.Ruleset ruleset; // override for which attack processor to use for this attack
 
     private boolean cancelled;
 
@@ -26,37 +28,39 @@ public final class AttackEvent implements Event {
         this.snapshot = snapshot;
     }
 
+    /** Original attack data (immutable) */
     public AttackSnapshot snapshot() { return snapshot; }
 
-    // immutable
-    public Player attacker() { return snapshot.attacker(); }
-    public Cause cause() { return snapshot.cause(); }
+    /**
+     * Snapshot that will be processed
+     * Set via {@code event.finalSnap(event.snapshot().toBuilder().target(x).build())}
+     */
+    public AttackSnapshot finalSnap() {
+        return finalSnap != null ? finalSnap : snapshot;
+    }
 
-    // mutable
-    public @Nullable Entity target() { return targetOverride !=null ? targetOverride : snapshot.targetHint(); }
-    public void target(@Nullable Entity target) { this.targetOverride = target; }
+    public void finalSnap(AttackSnapshot snap) { this.finalSnap = snap; }
 
-    public boolean sprintHit() { return sprintHitOverride !=null ? sprintHitOverride : snapshot.sprintHit(); }
-    public void sprintHit(boolean sprintHit) { this.sprintHitOverride = sprintHit; }
+    /** Whether to process the attack. False = observe / log only, True = process to attack pipeline. */
+    public boolean process() { return process; }
 
-    public ItemStack weapon() { return weaponOverride != null ? weaponOverride : snapshot.heldItemSnapshot(); }
-    public void weapon(ItemStack weapon) { this.weaponOverride = weapon; }
+    public void process(boolean process) { this.process = process; }
+
+    /** Override which attack processor (ruleset) to use (null uses default processor) */
+    public @Nullable AttackProcessor.Ruleset ruleset() { return ruleset; }
+
+    public void processor(AttackProcessor.Ruleset ruleset) { this.ruleset = ruleset; }
 
     public boolean cancelled() { return cancelled; }
+
+    /** Cancel the attack event */
     public void cancel() { this.cancelled = true; }
 
-    /** Build the final snapshot after API modification */
-    public AttackSnapshot toSnapshot() {
-        Entity t = target();
-        return new AttackSnapshot(
-                snapshot.attacker(),
-                t,
-                snapshot.cause(),
-                weapon(),
-                sprintHit(),
-                snapshot.attackerPos(),
-                t != null ? t.getPosition() : null
-        );
-    }
+    // public accessors
+    public Entity attacker() { return finalSnap().attacker(); }
+    public Cause cause() { return finalSnap().cause(); }
+    public @Nullable Entity target() { return finalSnap().target(); }
+    public boolean sprint() { return finalSnap().sprint(); }
+    public ItemStack item() { return finalSnap().item(); }
 
 }
