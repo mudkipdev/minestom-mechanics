@@ -1,10 +1,10 @@
 package dev.term4;
 
 import dev.term4.minestommechanics.MinestomMechanics;
-import dev.term4.minestommechanics.mechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.combat.Combat;
 import dev.term4.minestommechanics.mechanics.damage.DamageConfig;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
+import dev.term4.minestommechanics.mechanics.knockback.KnockbackSystem;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -20,7 +20,6 @@ import net.minestom.server.timer.TaskSchedule;
 
 public class Test {
     static void main() {
-
         // Could wrap these in compatibility methods (compat.applySystemProperties(mode: 1.7, 1.8, etc)
         // Unsure what this does but eh
         System.setProperty("minestom.new-socket-write-lock", "true");
@@ -36,7 +35,7 @@ public class Test {
 
         // Initialize the server
         MinecraftServer server = MinecraftServer.init(
-                new Auth.Bungee()
+                new Auth.Velocity("mbsxcYVtdk62") // dont forget to change it back to Auth.Bungee
         );
 
         MinecraftServer.getCommandManager().register(new TeleportCommand());
