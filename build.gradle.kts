@@ -9,12 +9,12 @@ version = "0.1.0"
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 mavenPublishing {
-    coordinates(group.toString(), project.name, version.toString())
+    coordinates(group.toString(), "minestom-mechanics", version.toString())
     publishToMavenCentral()
     signAllPublications()
 
     pom {
-        name = project.name
+        name = "minestom-mechanics"
         description = project.description
         url = "https://github.com/Term4/MinestomMechanics"
 
