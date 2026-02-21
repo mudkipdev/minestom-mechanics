@@ -1,8 +1,7 @@
-package dev.term4.minestommechanics.mechanics.combat.attack;
+package dev.term4.minestommechanics.mechanics.combat.attack.rulesets;
 
-import dev.term4.minestommechanics.mechanics.combat.attack.rulesets.CTSAttackProcessor;
-import dev.term4.minestommechanics.mechanics.combat.attack.rulesets.LegacyAttackProcessor;
-import dev.term4.minestommechanics.mechanics.combat.attack.rulesets.ModernAttackProcessor;
+import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
+import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
 
 /**
  * Responsible for processing attacks (or attempted attacks) from a player

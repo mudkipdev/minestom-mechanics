@@ -1,4 +1,4 @@
-package dev.term4.minestommechanics.knockback;
+package dev.term4.minestommechanics.mechanics.knockback;
 
 import dev.term4.minestommechanics.api.event.knockback.KnockbackEvent;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;

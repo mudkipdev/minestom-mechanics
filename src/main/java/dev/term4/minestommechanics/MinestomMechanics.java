@@ -1,6 +1,6 @@
 package dev.term4.minestommechanics;
 
-import dev.term4.minestommechanics.knockback.KnockbackSystem;
+import dev.term4.minestommechanics.mechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import dev.term4.minestommechanics.platform.client.ClientInfoService;
 import dev.term4.minestommechanics.platform.client.VersionDetector;

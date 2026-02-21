@@ -2,7 +2,7 @@ package dev.term4.minestommechanics.mechanics.combat;
 
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackFeature;
-import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
+import dev.term4.minestommechanics.mechanics.combat.attack.rulesets.AttackProcessor;
 import dev.term4.minestommechanics.MinestomMechanics;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;

@@ -3,6 +3,7 @@ package dev.term4.minestommechanics.mechanics.combat.attack;
 import dev.term4.minestommechanics.api.event.combat.AttackEvent;
 import dev.term4.minestommechanics.mechanics.combat.Combat.Config;
 import dev.term4.minestommechanics.mechanics.combat.attack.hitdetection.PacketHit;
+import dev.term4.minestommechanics.mechanics.combat.attack.rulesets.AttackProcessor;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 
@@ -32,7 +33,9 @@ public final class AttackFeature {
                 apiEvents.call(api);
                 if (api.cancelled() || !api.process()) return;
 
-                AttackProcessor proc = api.ruleset() != null ? api.ruleset().create(services) : cfg.ruleset.create(services);
+                if (api.invulnerable() && !api.bypassInvul()) return;
+
+                AttackProcessor proc = api.processor() != null ? api.processor().create(services) : cfg.ruleset.create(services);
                 proc.processAttack(api.finalSnap(), services);
             });
         }

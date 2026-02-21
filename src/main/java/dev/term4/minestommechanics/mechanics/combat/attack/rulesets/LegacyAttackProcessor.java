@@ -1,9 +1,8 @@
 package dev.term4.minestommechanics.mechanics.combat.attack.rulesets;
 
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
-import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
-import dev.term4.minestommechanics.knockback.KnockbackSystem;
+import dev.term4.minestommechanics.mechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.damage.DamageRequest;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import net.minestom.server.entity.LivingEntity;
@@ -22,7 +21,13 @@ public final class LegacyAttackProcessor implements AttackProcessor {
     @Override
     public void processAttack(AttackSnapshot snap, AttackServices services) {
 
-        // damage
+        // 1. Knockback
+        KnockbackSystem kb = services.knockback();
+        if (kb != null) {
+            kb.apply(snap);
+        }
+
+        // 2. Damage
         if (snap.target() instanceof LivingEntity living) {
             DamageSystem damage = services.damage();
             if (damage != null) {
@@ -32,12 +37,6 @@ public final class LegacyAttackProcessor implements AttackProcessor {
                         .amount(1.0f)   // placeholder
                 );
             }
-        }
-
-        // knockback
-        KnockbackSystem kb = services.knockback();
-        if (kb != null) {
-            kb.apply(snap);
         }
     }
 }

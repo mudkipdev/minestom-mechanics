@@ -1,8 +1,9 @@
-package dev.term4.minestommechanics.knockback;
+package dev.term4.minestommechanics.mechanics.knockback;
 
 import dev.term4.minestommechanics.MinestomMechanics;
 import dev.term4.minestommechanics.api.event.knockback.KnockbackEvent;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
+import dev.term4.minestommechanics.util.InvulnerabilityState;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -27,6 +28,8 @@ public final class KnockbackSystem {
         AttackSnapshot finalSnap = event.finalSnap();
 
         if (finalSnap.target() == null) return;
+
+        if (event.invulnerable() && !event.bypassInvul()) return;
 
         Vec velocity;
         if (event.velocity() != null) { velocity = event.velocity(); }

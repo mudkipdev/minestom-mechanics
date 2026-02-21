@@ -1,6 +1,6 @@
 package dev.term4.minestommechanics.mechanics.combat.attack;
 
-import dev.term4.minestommechanics.knockback.KnockbackSystem;
+import dev.term4.minestommechanics.mechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.util.SprintTracker;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import org.jetbrains.annotations.Nullable;

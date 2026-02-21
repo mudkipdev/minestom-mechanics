@@ -1,7 +1,8 @@
 package dev.term4.minestommechanics.api.event.combat;
 
-import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
+import dev.term4.minestommechanics.mechanics.combat.attack.rulesets.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
+import dev.term4.minestommechanics.util.InvulnerabilityState;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.event.Event;
 import net.minestom.server.item.ItemStack;
@@ -22,10 +23,14 @@ public final class AttackEvent implements Event {
     private boolean process = true; // process this attack, true by default (probs update from a boolean for which processor to use)
     private @Nullable AttackProcessor.Ruleset ruleset; // override for which attack processor to use for this attack
 
+    private boolean invulnerable;
+    private boolean bypassInvul;
+
     private boolean cancelled;
 
     public AttackEvent(AttackSnapshot snapshot) {
         this.snapshot = snapshot;
+        this.invulnerable = snapshot.target() != null && InvulnerabilityState.isInvulnerable(snapshot.target());
     }
 
     /** Original attack data (immutable) */
@@ -43,13 +48,15 @@ public final class AttackEvent implements Event {
 
     /** Whether to process the attack. False = observe / log only, True = process to attack pipeline. */
     public boolean process() { return process; }
-
     public void process(boolean process) { this.process = process; }
 
     /** Override which attack processor (ruleset) to use (null uses default processor) */
-    public @Nullable AttackProcessor.Ruleset ruleset() { return ruleset; }
-
+    public @Nullable AttackProcessor.Ruleset processor() { return ruleset; }
     public void processor(AttackProcessor.Ruleset ruleset) { this.ruleset = ruleset; }
+
+    public boolean invulnerable() { return invulnerable; }
+    public boolean bypassInvul() { return bypassInvul; }
+    public void bypassInvul(boolean b) { this.bypassInvul = b; }
 
     public boolean cancelled() { return cancelled; }
 

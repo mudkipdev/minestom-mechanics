@@ -1,7 +1,6 @@
 package dev.term4.minestommechanics.mechanics.combat.attack.rulesets;
 
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
-import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
 
 public final class ModernAttackProcessor implements AttackProcessor {

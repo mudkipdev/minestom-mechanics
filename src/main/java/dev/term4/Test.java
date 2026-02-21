@@ -1,8 +1,9 @@
 package dev.term4;
 
 import dev.term4.minestommechanics.MinestomMechanics;
-import dev.term4.minestommechanics.knockback.KnockbackSystem;
+import dev.term4.minestommechanics.mechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.combat.Combat;
+import dev.term4.minestommechanics.mechanics.damage.DamageConfig;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
@@ -49,7 +50,7 @@ public class Test {
         KnockbackSystem.install(mm, MinemenConfig.minemen());
 
         // 2. Initialize damage system
-        DamageSystem.install(mm);
+        DamageSystem.install(mm, new DamageConfig());
 
         // 3. Initialize combat system
         Combat.install(mm, new Combat.Config());

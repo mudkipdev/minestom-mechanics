@@ -1,8 +1,9 @@
 package dev.term4.minestommechanics.api.event.knockback;
 
 import dev.term4.minestommechanics.api.event.combat.AttackEvent;
-import dev.term4.minestommechanics.knockback.KnockbackConfig;
+import dev.term4.minestommechanics.mechanics.knockback.KnockbackConfig;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
+import dev.term4.minestommechanics.util.InvulnerabilityState;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.event.Event;
@@ -33,6 +34,8 @@ public final class KnockbackEvent implements Event {
     private KnockbackConfig config;
     private @Nullable Vec velocity;
     private @Nullable Vec direction;
+    private boolean invulnerable;
+    private boolean bypassInvul;
 
     private boolean cancelled;
 
@@ -40,6 +43,7 @@ public final class KnockbackEvent implements Event {
         this.snapshot = snapshot;
         this.config = config;
         this.cause = Cause.from(snapshot.cause());
+        this.invulnerable = snapshot.target() != null && InvulnerabilityState.isInvulnerable(snapshot.target());
     }
 
     /** Original attack data (immutable) */
@@ -67,14 +71,19 @@ public final class KnockbackEvent implements Event {
     public void velocity(@Nullable Vec velocity) { this.velocity = velocity; }
 
     /** If set, overides the computed horizontal (xz) knockback direction. */
-    public @Nullable Vec direction() { return direction(); }
+    public @Nullable Vec direction() { return direction; }
     public void direction(@Nullable Vec direction) { this.direction = direction; }
+
+    public boolean invulnerable() { return invulnerable; }
+    public boolean bypassInvul() { return bypassInvul; }
+
+    /** Deal knockback even if the target is invulnerable. */
+    public void bypassInvul(boolean b) { this.bypassInvul = b; }
 
     public boolean cancelled() { return cancelled; }
 
     /** Cancel the knockback event */
     public void cancel() { this.cancelled = true; }
-
 
     // public accessors
     public Entity attacker() { return finalSnap().attacker(); }

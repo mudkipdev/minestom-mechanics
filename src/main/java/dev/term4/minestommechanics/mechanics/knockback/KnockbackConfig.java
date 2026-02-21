@@ -1,4 +1,4 @@
-package dev.term4.minestommechanics.knockback;
+package dev.term4.minestommechanics.mechanics.knockback;
 
 /** Mutable knockback config. Use {@link #defaultConfig()} for fresh default config, use {@link #copy()} for overrides. */
 public final class KnockbackConfig {
