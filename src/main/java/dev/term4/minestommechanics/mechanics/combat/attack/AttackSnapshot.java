@@ -25,7 +25,7 @@ public record AttackSnapshot (Entity attacker, @Nullable Entity target, AttackEv
     public static final class Builder {
         private Entity attacker;
         private @Nullable Entity target;
-        private Cause cause;
+        private final Cause cause;
         private ItemStack item;
         private boolean sprint;
         private @Nullable Point attackerPos;

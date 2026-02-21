@@ -3,7 +3,7 @@ package dev.term4.minestommechanics.mechanics.combat.attack.rulesets;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackSnapshot;
-import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
+import dev.term4.minestommechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.damage.DamageRequest;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import net.minestom.server.entity.LivingEntity;
@@ -22,22 +22,22 @@ public final class LegacyAttackProcessor implements AttackProcessor {
     @Override
     public void processAttack(AttackSnapshot snap, AttackServices services) {
 
-        if (!(snap.target() instanceof LivingEntity living)) return;
-
         // damage
-        DamageSystem damage = services.damage();
-        if (damage != null) {
-            damage.apply(DamageRequest.of(living, PLAYER_ATTACK)
-                    .attacker(snap.attacker())
-                    .source(snap.attacker())
-                    .amount(1.0f)   // placeholder
-            );
+        if (snap.target() instanceof LivingEntity living) {
+            DamageSystem damage = services.damage();
+            if (damage != null) {
+                damage.apply(DamageRequest.of(living, PLAYER_ATTACK)
+                        .attacker(snap.attacker())
+                        .source(snap.attacker())
+                        .amount(1.0f)   // placeholder
+                );
+            }
         }
 
         // knockback
         KnockbackSystem kb = services.knockback();
         if (kb != null) {
-            kb.apply(living, snap, KnockbackSystem.KnockbackType.ATTACK_PACKET);
+            kb.apply(snap);
         }
     }
 }

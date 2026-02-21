@@ -1,38 +1,26 @@
-package dev.term4.minestommechanics.mechanics.combat.knockback.tracking;
+package dev.term4.minestommechanics.util;
 
-import dev.term4.minestommechanics.util.TickClock;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerStopSprintingEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.tag.Tag;
+import org.jetbrains.annotations.Nullable;
+
+// Subject to be moved later. Here now because I don't see where else to put it (maybe a tracker class? Player class?)
 
 public final class SprintTracker {
 
-    // Packet approach for tracking a players sprinting status
+    // Packet approach for tracking a players sprinting status with a buffer to offset ping
 
     private static final Tag<Long> LAST_SPRINT_TICK = Tag.Transient("mm:last-sprint-tick");
 
-    // "buffer" window for sprint hits (how long should a player be considered as sprinting after they stop actually sprinting)
-    private final long sprintBuffer; // wire to config later
+    public SprintTracker() { }
 
-    public SprintTracker(long sprintBuffer) {
-        this.sprintBuffer = sprintBuffer;
-    }
-
-    /** Called when a player starts sprinting */
+    /** Called when a player stops sprinting */
     public void markStopSprint(Player player) {
         player.setTag(LAST_SPRINT_TICK, TickClock.now());
-    }
-
-    public boolean isSprinting(Player attacker) {
-        if (attacker.isSprinting()) return true;
-
-        Long last = attacker.getTag(LAST_SPRINT_TICK);
-        if (last == null) return false;
-
-        return (TickClock.now() - last) <= sprintBuffer;
     }
 
     /** Listener node that updates LAST_SPRINT_TICK. */ // Installed in the combat node
@@ -44,6 +32,14 @@ public final class SprintTracker {
         });
 
         return node;
+    }
+
+    /** Returns true if a player was sprinting within {@code @ticks}, returns raw sprint state if tracker doesn't exist */
+    public static boolean isSprinting(@Nullable SprintTracker t, Player p, long ticks) {
+        Long last = p.getTag(LAST_SPRINT_TICK);
+        if  (t == null || p.isSprinting()) { return p.isSprinting(); }
+        if (last == null) return false;
+        return (TickClock.now() - last) <= ticks;
     }
 
 }

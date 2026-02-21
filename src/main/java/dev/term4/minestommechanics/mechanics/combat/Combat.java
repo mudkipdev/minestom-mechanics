@@ -3,15 +3,9 @@ package dev.term4.minestommechanics.mechanics.combat;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackServices;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackFeature;
 import dev.term4.minestommechanics.mechanics.combat.attack.AttackProcessor;
-import dev.term4.minestommechanics.mechanics.combat.knockback.DefaultKnockbackSystem;
-import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackConfig;
-import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
-import dev.term4.minestommechanics.mechanics.combat.knockback.tracking.SprintTracker;
-import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import dev.term4.minestommechanics.MinestomMechanics;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
-import org.jetbrains.annotations.Nullable;
 
 public final class Combat {
 
@@ -20,19 +14,8 @@ public final class Combat {
     private Combat() {}
 
     public static final class Config {
-
         public boolean enableAttack = true; // Attack is enabled by default
-
         public final Attack attack = new Attack();
-
-        // These will likely be replaced with a similar thing as the Attack class below
-        public @Nullable KnockbackSystem knockbackSystem = null;
-        public final KnockbackConfig knockback = new KnockbackConfig();
-
-        public final Sprint sprint = new Sprint();
-        public static final class Sprint {
-            public long sprintBuffer = 8;
-        }
 
         public static final class Attack {
             public boolean enabled = true;
@@ -44,29 +27,27 @@ public final class Combat {
             public AttackProcessor.Ruleset ruleset = AttackProcessor.legacy();
 
             public double reach = 3.0;
+            public long sprintBuffer = 8;
         }
     }
 
     public static void install(MinestomMechanics mm) {
-        install(mm, new Config(), null);
+        install(mm, new Config());
     }
 
-    public static void install(MinestomMechanics mm, Config cfg, @Nullable DamageSystem damage) {
+    public static void install(MinestomMechanics mm, Config cfg) {
          EventNode<Event> combat = EventNode.all("mm:combat");
 
-         // Combat owned systems
-         KnockbackSystem knockback = cfg.knockbackSystem != null
-                 ? cfg.knockbackSystem
-                 : new DefaultKnockbackSystem(cfg.knockback, mm.events());   // This is subject to change and can be simplified
-         SprintTracker sprintTracker = new SprintTracker(cfg.sprint.sprintBuffer);    // default for now
+        // Optional services (get from mm instance)
+        var damage = mm.damageSystem();
+        var knockback = mm.knockbackSystem();
+        var sprintTracker = mm.sprintTracker();
 
-         AttackServices services = new AttackServices(damage, knockback, sprintTracker);
+        var services = new AttackServices(damage, knockback, sprintTracker);
 
          if (cfg.enableAttack) {
              AttackFeature.install(combat, cfg.attack, services, mm.events());
          }
-
-         combat.addChild(sprintTracker.node());
 
          mm.install(combat);
     }

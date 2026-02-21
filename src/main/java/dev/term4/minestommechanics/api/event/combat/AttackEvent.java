@@ -14,7 +14,7 @@ public final class AttackEvent implements Event {
     // This is the public facing API users can hook into to get information or change how an attack event happens
 
     // Was this attack "real" or emulated? Was this a projectile?
-    public enum Cause { ATTACK_PACKET, SWING_RAYCAST, PROJECTILE } // Probably add something here for mob / non player attacks
+    public enum Cause { ATTACK_PACKET, SWING_RAYCAST, PROJECTILE, SWEEPING, EXPLOSION } // Probably add something here for mob / non player attacks
 
     private final AttackSnapshot snapshot;
     private AttackSnapshot finalSnap;

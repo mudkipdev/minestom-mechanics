@@ -25,11 +25,9 @@ public final class AttackFeature {
 
         if (!cfg.enabled) return;
 
-        final AttackProcessor processor = cfg.ruleset.create(services);
-
         // Attack packets
         if (cfg.packetHits) {
-            PacketHit.install(combatNode, services, snap -> {
+            PacketHit.install(combatNode, services, cfg.sprintBuffer, snap -> {
                 AttackEvent api = new AttackEvent(snap);
                 apiEvents.call(api);
                 if (api.cancelled() || !api.process()) return;

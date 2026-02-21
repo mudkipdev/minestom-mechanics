@@ -1,9 +1,1 @@
-package dev.term4.minestommechanics.mechanics.damage;
-
-public interface DamageSystem {
-
-    // This interface handles damage application
-
-    void apply(DamageRequest request);
-
-}
+package dev.term4.minestommechanics.mechanics.damage;import dev.term4.minestommechanics.MinestomMechanics;import dev.term4.minestommechanics.api.event.damage.DamageEvent;import net.minestom.server.coordinate.Point;import net.minestom.server.entity.Entity;import net.minestom.server.entity.LivingEntity;import net.minestom.server.entity.damage.Damage;import net.minestom.server.event.Event;import net.minestom.server.event.EventNode;public final class DamageSystem {    // This class is the main damage system. Applies damage, fires API, determines damage type, amount, etc.    public static final float DEFAULT_AMOUNT = 1.0f;    private final EventNode<Event> apiEvents;    public DamageSystem(EventNode<Event> apiEvents) {        this.apiEvents = apiEvents;    }    public void apply(DamageRequest req) {        Entity target = req.target();        if (!(target instanceof LivingEntity living)) return;        float amount = req.amount() != null ? req.amount() : DEFAULT_AMOUNT;        Entity source = req.source(); // source = projectile / explosion / etc        Entity attacker = req.attacker(); // attacker = entity responsible (mob, player)        Point sourcePos = req.sourcePosition();        // API        DamageEvent event = new DamageEvent(target, req.type(), req.source(), amount);        apiEvents.call(event);        if (event.cancelled()) return;        amount = event.amount();        if (amount <= 0) return;        // Build damage        Damage damage = new Damage(                req.type(),                source,                attacker,                sourcePos,                amount        );        living.damage(damage);    }    public static DamageSystem install(MinestomMechanics mm) {        var system = new DamageSystem(mm.events());        mm.registerDamage(system);        return system;    }}

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ClientInfoService {
 
     // This class stores ONLY client information relevant to this library. For now only the protocol version.
-    // In the future this may include things like mods, Animatium, Combatify, Lunar client Apollo, and Badlion's API
+    // In the future this may include things like modifiers, Animatium, Combatify, Lunar client Apollo, and Badlion's API
 
     public static final int UNKNOWN_PROTOCOL = -1;
 

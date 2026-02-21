@@ -1,8 +1,9 @@
 package dev.term4;
 
 import dev.term4.minestommechanics.MinestomMechanics;
+import dev.term4.minestommechanics.knockback.KnockbackSystem;
 import dev.term4.minestommechanics.mechanics.combat.Combat;
-import dev.term4.minestommechanics.mechanics.damage.DefaultDamageSystem;
+import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import net.minestom.server.Auth;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
@@ -37,13 +38,21 @@ public class Test {
                 new Auth.Bungee()
         );
 
+        MinecraftServer.getCommandManager().register(new TeleportCommand());
+
         // Enable ViaVersion proxy details
         MinestomMechanics mm = MinestomMechanics.getInstance();
         mm.viaProxyDetails = true;
         mm.initialize();
 
-        // Initialize combat system (TODO: remove damage system from here, should be entirely separate)
-        Combat.install(mm, new Combat.Config(), new DefaultDamageSystem(mm.events()));
+        // 1. Initialize knockback system
+        KnockbackSystem.install(mm, MinemenConfig.minemen());
+
+        // 2. Initialize damage system
+        DamageSystem.install(mm);
+
+        // 3. Initialize combat system
+        Combat.install(mm, new Combat.Config());
 
         // Create the instance(world)
         InstanceManager instanceManager = MinecraftServer.getInstanceManager();

@@ -1,7 +1,7 @@
 package dev.term4.minestommechanics.mechanics.combat.attack;
 
-import dev.term4.minestommechanics.mechanics.combat.knockback.KnockbackSystem;
-import dev.term4.minestommechanics.mechanics.combat.knockback.tracking.SprintTracker;
+import dev.term4.minestommechanics.knockback.KnockbackSystem;
+import dev.term4.minestommechanics.util.SprintTracker;
 import dev.term4.minestommechanics.mechanics.damage.DamageSystem;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,5 +14,5 @@ import org.jetbrains.annotations.Nullable;
 public record AttackServices(
         @Nullable DamageSystem damage,
         @Nullable KnockbackSystem knockback,
-        SprintTracker sprintTracker
+        @Nullable SprintTracker sprintTracker
 ) { }
